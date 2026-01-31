@@ -24,19 +24,30 @@ class _WorkoutSuggesterScreenState extends State<WorkoutSuggesterScreen> {
   void _generateWorkout(UserProfile user) async {
     setState(() => _isLoading = true);
 
-    // Fetch history for better AI context
-    final history = await _db.getWorkoutHistory(user.id).first;
+    try {
+      // Fetch history for better AI context
+      final history = await _db.getWorkoutHistory(user.id).first;
 
-    final workout = await WorkoutEngine.suggestWorkoutAI(
-      user: user,
-      history: history,
-      availableMinutes: _selectedMinutes,
-    );
+      final workout = await WorkoutEngine.suggestWorkoutAI(
+        user: user,
+        history: history,
+        availableMinutes: _selectedMinutes,
+      );
 
-    setState(() {
-      _suggestedWorkout = workout;
-      _isLoading = false;
-    });
+      if (mounted) {
+        setState(() {
+          _suggestedWorkout = workout;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error generating workout: $e")),
+        );
+      }
+    }
   }
 
   void _saveAndStart(String uid) async {
