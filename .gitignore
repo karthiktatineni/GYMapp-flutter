@@ -142,3 +142,7 @@ migrate_working_dir/
 coverage/
 .test_coverage.dart
 .dart_tool/
+
+run_app.bat
+
+build_apk.bat

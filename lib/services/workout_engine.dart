@@ -6,9 +6,6 @@ import '../models/workout.dart';
 import '../config/env_config.dart';
 
 class WorkoutEngine {
-  // API Key is loaded securely from environment configuration
-  // Pass via: flutter run --dart-define=GEMINI_API_KEY=your_key
-
   static Future<Workout> suggestWorkoutAI({
     required UserProfile user,
     required List<Workout> history,
@@ -22,9 +19,8 @@ class WorkoutEngine {
     }
 
     try {
-      // Using 'gemini-2.0-flash-exp' for the latest valid AI performance
       final model = GenerativeModel(
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-1.5-flash',
         apiKey: EnvConfig.geminiApiKey,
       );
 
@@ -32,6 +28,7 @@ class WorkoutEngine {
       String goalText = _getGoalText(user.goal);
       String levelText = _getLevelText(user.experienceLevel);
       String equipmentText = _getEquipmentText(user.equipment);
+      String scheduleText = _getScheduleText(user.preferredSchedule);
 
       final prompt = """
       System: You are an elite fitness coach. Respond ONLY with valid JSON.
@@ -40,6 +37,7 @@ class WorkoutEngine {
       - Goal: $goalText
       - Fitness Level: $levelText
       - Equipment: $equipmentText
+      - Preferred Split: $scheduleText
       - Metrics: ${user.weight}kg, ${user.height}cm, Age ${user.age}
       - History: ${history.isEmpty ? "New User" : "Completed ${history.length} sessions"}
       
@@ -119,6 +117,19 @@ class WorkoutEngine {
         return "Dumbbells Only";
       case EquipmentAvailability.fullGym:
         return "Full Gym Setup";
+    }
+  }
+
+  static String _getScheduleText(PreferredSchedule schedule) {
+    switch (schedule) {
+      case PreferredSchedule.pushPullLegs:
+        return "Push / Pull / Legs Split";
+      case PreferredSchedule.upperLower:
+        return "Upper / Lower Split";
+      case PreferredSchedule.broSplit:
+        return "Body Part Split (Bro Split)";
+      case PreferredSchedule.fullBody:
+        return "Full Body Workout";
     }
   }
 

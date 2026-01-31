@@ -25,9 +25,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   FitnessGoal _goal = FitnessGoal.generalFitness;
   ExperienceLevel _level = ExperienceLevel.beginner;
   EquipmentAvailability _equipment = EquipmentAvailability.fullGym;
+  PreferredSchedule _schedule = PreferredSchedule.fullBody;
 
   void _nextPage() {
-    if (_currentStep < 4) {
+    if (_currentStep < 5) {
       _pageController.nextPage(
           duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     } else {
@@ -55,6 +56,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         goal: _goal,
         experienceLevel: _level,
         equipment: _equipment,
+        preferredSchedule: _schedule,
       );
 
       final db = DatabaseService();
@@ -83,7 +85,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Step ${_currentStep + 1} of 5",
+        title: Text("Step ${_currentStep + 1} of 6",
             style: const TextStyle(fontSize: 14, color: AppTheme.textGrey)),
         centerTitle: true,
       ),
@@ -97,6 +99,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           _buildGoalStep(),
           _buildExperienceStep(),
           _buildEquipmentStep(),
+          _buildScheduleStep(),
         ],
       ),
       bottomNavigationBar: Padding(
@@ -106,11 +109,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: CircularProgressIndicator(color: AppTheme.primaryGold))
             : ElevatedButton(
                 onPressed: _nextPage,
-                child: Text(_currentStep == 4 ? "Get Started" : "Continue"),
+                child: Text(_currentStep == 5 ? "Get Started" : "Continue"),
               ),
       ),
     );
   }
+
+  // ... (Existing steps kept same)
+  // Re-adding existing steps to keep context valid for replacement if needed,
+  // but since we are modifying the Build method and vars, I'll just skip to the new step method.
 
   Widget _buildBasicInfoStep() {
     return _buildStepContainer(
@@ -229,6 +236,59 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           _buildEquipmentOption(EquipmentAvailability.fullGym, "Full Gym",
               "Everything available"),
         ],
+      ),
+    );
+  }
+
+  Widget _buildScheduleStep() {
+    return _buildStepContainer(
+      title: "Preferred Schedule",
+      subtitle: "How do you like to split your workouts?",
+      child: Column(
+        children: [
+          _buildScheduleOption(PreferredSchedule.pushPullLegs,
+              "Push / Pull / Legs", "Classic 3-day split"),
+          _buildScheduleOption(PreferredSchedule.upperLower, "Upper / Lower",
+              "4-day balanced split"),
+          _buildScheduleOption(PreferredSchedule.broSplit, "Bro Split",
+              "Focus on one muscle group per day"),
+          _buildScheduleOption(PreferredSchedule.fullBody, "Full Body",
+              "Hit everything, every session"),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScheduleOption(PreferredSchedule s, String title, String sub) {
+    bool selected = _schedule == s;
+    return GestureDetector(
+      onTap: () => setState(() => _schedule = s),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: selected ? AppTheme.primaryGold : AppTheme.cardGrey,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text(title,
+                      style: TextStyle(
+                          color: selected ? Colors.black : Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18)),
+                  Text(sub,
+                      style: TextStyle(
+                          color:
+                              selected ? Colors.black54 : AppTheme.textGrey)),
+                ])),
+            if (selected) const Icon(Icons.check_circle, color: Colors.black),
+          ],
+        ),
       ),
     );
   }

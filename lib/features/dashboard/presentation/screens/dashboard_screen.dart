@@ -7,6 +7,7 @@ import '../../../../services/auth_service.dart';
 import '../../../../services/database_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../../profile/presentation/screens/profile_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -35,6 +36,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           final profile = snapshot.data!;
+
+          if (_currentIndex == 3) return const ProfileScreen();
 
           return _currentIndex == 0
               ? _buildDashboardHome(profile)
@@ -251,7 +254,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onTap: (i) {
         if (i == 1) Navigator.pushNamed(context, '/suggester');
         if (i == 2) Navigator.pushNamed(context, '/progress');
-        setState(() => _currentIndex = 0);
+        if (i == 3) {
+          setState(() => _currentIndex = 3);
+        } else {
+          setState(() => _currentIndex = 0);
+        }
       },
       backgroundColor: AppTheme.backgroundBlack,
       selectedItemColor: AppTheme.primaryGold,

@@ -1,9 +1,14 @@
 import 'package:uuid/uuid.dart';
 
 enum Gender { male, female, other }
+
 enum FitnessGoal { fatLoss, muscleGain, strength, generalFitness }
+
 enum ExperienceLevel { beginner, intermediate, advanced }
+
 enum EquipmentAvailability { bodyweight, dumbbells, fullGym }
+
+enum PreferredSchedule { pushPullLegs, broSplit, upperLower, fullBody }
 
 class UserProfile {
   final String id;
@@ -16,6 +21,7 @@ class UserProfile {
   final FitnessGoal goal;
   final ExperienceLevel experienceLevel;
   final EquipmentAvailability equipment;
+  final PreferredSchedule preferredSchedule;
   final int streakCount;
   final double bmi;
 
@@ -30,6 +36,7 @@ class UserProfile {
     required this.goal,
     required this.experienceLevel,
     required this.equipment,
+    required this.preferredSchedule,
     this.streakCount = 0,
   })  : id = id ?? const Uuid().v4(),
         bmi = weight / ((height / 100) * (height / 100));
@@ -46,6 +53,7 @@ class UserProfile {
       'goal': goal.index,
       'experienceLevel': experienceLevel.index,
       'equipment': equipment.index,
+      'preferredSchedule': preferredSchedule.index,
       'streakCount': streakCount,
       'bmi': bmi,
     };
@@ -63,6 +71,9 @@ class UserProfile {
       goal: FitnessGoal.values[map['goal']],
       experienceLevel: ExperienceLevel.values[map['experienceLevel']],
       equipment: EquipmentAvailability.values[map['equipment']],
+      preferredSchedule: map['preferredSchedule'] != null
+          ? PreferredSchedule.values[map['preferredSchedule']]
+          : PreferredSchedule.fullBody,
       streakCount: map['streakCount'] ?? 0,
     );
   }
