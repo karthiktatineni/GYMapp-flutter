@@ -10,7 +10,28 @@ A premium AI-powered workout planner and fitness tracker built with Flutter.
 - 🎯 **Personalized Plans** - Workouts tailored to your goals
 - 📱 **Cross-platform** - Android, iOS, Web, and Desktop
 
-## 🚀 Getting Started
+
+## 🚀 Quick Start (Windows)
+
+We have included helper scripts to make running and building easier without typing long commands.
+
+### 1. **Run the App**
+To run the app on your connected device:
+```powershell
+.\run_app.bat
+```
+
+### 2. **Build Release APK**
+To build a production-ready APK:
+```powershell
+.\build_apk.bat
+```
+_The APK will be located at:_ `build\app\outputs\flutter-apk\app-release.apk`
+
+---
+
+## 🛠 Manual Setup
+If you prefer running commands manually:
 
 ### Prerequisites
 
